@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
+import Button from "./Button";
 
 const HeroSlider = (props) => {
   const [activeSlide, setActiveSlide] = useState(0);
@@ -69,7 +70,13 @@ const HeroSliderItem = (props) => (
       </div>
       <div className="hero-slider__item__info__btn">
         <Link to={props.item.path}>
-          <button>xem chi tiết</button>
+          <Button
+            backgroundColor={props.item.color}
+            icon="bx bx-cart"
+            animate={true}
+          >
+            xem chi tiết
+          </Button>
         </Link>
       </div>
     </div>
