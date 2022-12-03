@@ -1,11 +1,19 @@
-import React from 'react'
-
+import React, { useEffect, useState } from "react";
+import Helmet from "../components/Helmet";
+import productData from "../assets/fake-data/products";
+import numberWithCommas from "../utils/numberWithCommas";
+import { useSelector } from "react-redux";
 const Cart = () => {
-    return (
-        <div>
-            Cart
-        </div>
-    )
-}
+  const cartItem = useSelector((state) => state.cartItems.value);
+  const [totalProducts, setTotalProducts] = useState(0);
 
-export default Cart
+  const [totalPrice, setTotalPrice] = useState(0);
+  useEffect(() => {});
+  return (
+    <Helmet title="Giỏ hàng">
+      <div className="cart">cart</div>
+    </Helmet>
+  );
+};
+
+export default Cart;

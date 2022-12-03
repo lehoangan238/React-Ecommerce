@@ -1,9 +1,25 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import Button from "./Button";
+import { useDispatch } from "react-redux";
+import { addItem } from "../redux/shopping-cart/cartItemsSlice";
+import { remove } from "../redux/product-modal/productModalSlice";
 import numberWithCommas from "../utils/numberWithCommas";
 const ProductView = (props) => {
-  const product = props.product;
+  const dispatch = useDispatch();
+  let product = props.product;
+  if (product === undefined)
+    product = {
+      title: "",
+      price: "",
+      image01: null,
+      image02: null,
+      categorySlug: "",
+      colors: [],
+      slug: "",
+      size: [],
+      description: "",
+    };
   const [previewImg, setPreviewImg] = useState(product.image01);
   const [descriptionExpand, setDescriptionExpand] = useState(false);
   const [color, setColor] = useState(undefined);
@@ -46,9 +62,30 @@ const ProductView = (props) => {
         price: product.price,
         quantity: quantity,
       };
+      if (dispatch(addItem(newItem))) {
+        alert("Thêm vào giỏ hàng thành công!");
+      } else {
+        alert("Thêm vào giỏ hàng thất bại!");
+      }
     }
   };
-  const goToCart = () => {};
+  const goToCart = () => {
+    if (check()) {
+      let newItem = {
+        slug: product.slug,
+        color: color,
+        size: size,
+        price: product.price,
+        quantity: quantity,
+      };
+      if (dispatch(addItem(newItem))) {
+        dispatch(remove());
+        props.history.push("/cart");
+      } else {
+        alert("Fail");
+      }
+    }
+  };
   return (
     <div className="product">
       <div className="product__images">
@@ -150,7 +187,7 @@ const ProductView = (props) => {
         </div>
         <div className="product__info__item">
           <Button onClick={addToCart}>Thêm vào giỏ</Button>
-          <Button>Mua ngay</Button>
+          <Button onClick={goToCart}>Mua ngay</Button>
         </div>
       </div>
     </div>
