@@ -1,13 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import Button from "./Button";
+
+import { withRouter } from "react-router";
+
 import { useDispatch } from "react-redux";
+
 import { addItem } from "../redux/shopping-cart/cartItemsSlice";
 import { remove } from "../redux/product-modal/productModalSlice";
+
+import Button from "./Button";
 import numberWithCommas from "../utils/numberWithCommas";
+
 const ProductView = (props) => {
   const dispatch = useDispatch();
+
   let product = props.product;
+
   if (product === undefined)
     product = {
       title: "",
@@ -20,26 +28,32 @@ const ProductView = (props) => {
       size: [],
       description: "",
     };
+
   const [previewImg, setPreviewImg] = useState(product.image01);
+
   const [descriptionExpand, setDescriptionExpand] = useState(false);
+
   const [color, setColor] = useState(undefined);
+
   const [size, setSize] = useState(undefined);
+
   const [quantity, setQuantity] = useState(1);
+
   const updateQuantity = (type) => {
     if (type === "plus") {
       setQuantity(quantity + 1);
     } else {
-      if (quantity > 1) {
-        setQuantity(quantity - 1);
-      }
+      setQuantity(quantity - 1 < 1 ? 1 : quantity - 1);
     }
   };
+
   useEffect(() => {
     setPreviewImg(product.image01);
     setQuantity(1);
     setColor(undefined);
     setSize(undefined);
   }, [product]);
+
   const check = () => {
     if (color === undefined) {
       alert("Vui lòng chọn màu sắc!");
@@ -53,6 +67,7 @@ const ProductView = (props) => {
 
     return true;
   };
+
   const addToCart = () => {
     if (check()) {
       let newItem = {
@@ -63,12 +78,13 @@ const ProductView = (props) => {
         quantity: quantity,
       };
       if (dispatch(addItem(newItem))) {
-        alert("Thêm vào giỏ hàng thành công!");
+        alert("Success");
       } else {
-        alert("Thêm vào giỏ hàng thất bại!");
+        alert("Fail");
       }
     }
   };
+
   const goToCart = () => {
     if (check()) {
       let newItem = {
@@ -86,6 +102,7 @@ const ProductView = (props) => {
       }
     }
   };
+
   return (
     <div className="product">
       <div className="product__images">
@@ -127,7 +144,7 @@ const ProductView = (props) => {
       <div className="product__info">
         <h1 className="product__info__title">{product.title}</h1>
         <div className="product__info__item">
-          <span className="product__info__title__price">
+          <span className="product__info__item__price">
             {numberWithCommas(product.price)}
           </span>
         </div>
@@ -148,7 +165,7 @@ const ProductView = (props) => {
           </div>
         </div>
         <div className="product__info__item">
-          <div className="product__info__item__title">Size</div>
+          <div className="product__info__item__title">Kích cỡ</div>
           <div className="product__info__item__list">
             {product.size.map((item, index) => (
               <div
@@ -186,8 +203,27 @@ const ProductView = (props) => {
           </div>
         </div>
         <div className="product__info__item">
-          <Button onClick={addToCart}>Thêm vào giỏ</Button>
-          <Button onClick={goToCart}>Mua ngay</Button>
+          <Button onClick={() => addToCart()}>thêm vào giỏ</Button>
+          <Button onClick={() => goToCart()}>mua ngay</Button>
+        </div>
+      </div>
+      <div
+        className={`product-description mobile ${
+          descriptionExpand ? "expand" : ""
+        }`}
+      >
+        <div className="product-description__title">Chi tiết sản phẩm</div>
+        <div
+          className="product-description__content"
+          dangerouslySetInnerHTML={{ __html: product.description }}
+        ></div>
+        <div className="product-description__toggle">
+          <Button
+            size="sm"
+            onClick={() => setDescriptionExpand(!descriptionExpand)}
+          >
+            {descriptionExpand ? "Thu gọn" : "Xem thêm"}
+          </Button>
         </div>
       </div>
     </div>
@@ -195,7 +231,7 @@ const ProductView = (props) => {
 };
 
 ProductView.propTypes = {
-  product: PropTypes.object.isRequired,
+  product: PropTypes.object,
 };
 
-export default ProductView;
+export default withRouter(ProductView);
