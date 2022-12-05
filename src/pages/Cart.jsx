@@ -37,6 +37,11 @@ const Cart = () => {
   return (
     <Helmet title="Giỏ hàng">
       <div className="cart">
+        <div className="cart__list">
+          {cartProducts.map((item, index) => (
+            <CartItem item={item} key={index} />
+          ))}
+        </div>
         <div className="cart__info">
           <div className="cart__info__txt">
             <p>Bạn đang có {totalProducts} sản phẩm trong giỏ hàng</p>
@@ -51,11 +56,6 @@ const Cart = () => {
               <Button size="block">Tiếp tục mua hàng</Button>
             </Link>
           </div>
-        </div>
-        <div className="cart__list">
-          {cartProducts.map((item, index) => (
-            <CartItem item={item} key={index} />
-          ))}
         </div>
       </div>
     </Helmet>
