@@ -11,7 +11,6 @@ import ProductCard from "../components/ProductCard";
 import banner from "../assets/images/banner.png";
 import { Link } from "react-router-dom";
 const Home = () => {
-  console.log(heroSliderData);
   return (
     <Helmet title="Trang chủ">
       <HeroSlider

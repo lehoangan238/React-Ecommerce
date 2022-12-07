@@ -7,15 +7,13 @@ import { useDispatch } from "react-redux";
 
 import { addItem } from "../redux/shopping-cart/cartItemsSlice";
 import { remove } from "../redux/product-modal/productModalSlice";
-
+import { toast } from "react-toastify";
 import Button from "./Button";
 import numberWithCommas from "../utils/numberWithCommas";
 
 const ProductView = (props) => {
   const dispatch = useDispatch();
-
   let product = props.product;
-
   if (product === undefined)
     product = {
       title: "",
@@ -56,12 +54,21 @@ const ProductView = (props) => {
 
   const check = () => {
     if (color === undefined) {
-      alert("Vui lòng chọn màu sắc!");
+      toast.error("Vui lòng chọn màu", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
       return false;
     }
 
     if (size === undefined) {
-      alert("Vui lòng chọn kích cỡ!");
+      toast.error("Vui lòng chọn size");
       return false;
     }
 
@@ -78,9 +85,9 @@ const ProductView = (props) => {
         quantity: quantity,
       };
       if (dispatch(addItem(newItem))) {
-        alert("Success");
+        toast.success("Đã thêm vào giỏ hàng");
       } else {
-        alert("Fail");
+        toast.error("Đã có lỗi xảy ra");
       }
     }
   };
@@ -98,7 +105,7 @@ const ProductView = (props) => {
         dispatch(remove());
         props.history.push("/cart");
       } else {
-        alert("Fail");
+        toast.error("Thêm vào giỏ hàng thất bại");
       }
     }
   };

@@ -1,7 +1,7 @@
 import React from "react";
 
 import { BrowserRouter, Route } from "react-router-dom";
-
+import { ToastContainer } from "react-toastify";
 import Header from "./Header";
 import Footer from "./Footer";
 
@@ -25,6 +25,7 @@ const Layout = () => {
           </div>
         )}
       />
+      <ToastContainer />
     </BrowserRouter>
   );
 };
