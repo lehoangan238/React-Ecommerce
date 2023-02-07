@@ -65,6 +65,66 @@
         padding: 0 12px;
         cursor: pointer;
         -webkit-tap-highlight-color: transparent;
+        .header--cart {
+          position: absolute;
+          bottom: -15px;
+          right: 0px;
+          padding: 16px;
+          transform: translateY(100%);
+          background-color: rgb(255, 255, 255);
+          border-radius: 6px;
+          box-shadow: $box-shadow;
+          display: none;
+          &.active {
+            display: block;
+          }
+          &::before {
+            content: "";
+            position: absolute;
+            bottom: 100%;
+            right: 15px;
+            border-width: 8px;
+            border-style: solid;
+            border-color: transparent transparent rgb(255, 255, 255);
+            border-image: initial;
+          }
+          .btn-close {
+            cursor: pointer;
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            padding: 4px;
+            color: rgb(155, 155, 155);
+            font-size: 11px;
+          }
+          .status {
+            display: flex;
+            -webkit-box-align: center;
+            align-items: center;
+            margin: 0px;
+            color: rgb(51, 51, 51);
+            font-size: 13px;
+            white-space: nowrap;
+            i {
+              margin-right: 4px;
+              color: rgb(76, 175, 80);
+              font-size: 19px;
+            }
+          }
+          .btn-view-cart {
+            display: block;
+            margin-top: 16px;
+            padding: 10px 0px;
+            width: 240px;
+            color: rgb(255, 255, 255);
+            font-size: 14px;
+            font-weight: 400;
+            text-align: center;
+            white-space: nowrap;
+            background-color: rgb(255, 57, 69);
+            border-radius: 4px;
+          }
+        }
         .header__card-notice {
           @include flex(center, center);
           position: absolute;
@@ -169,6 +229,10 @@
       font-size: 2.25rem;
 
       &__item {
+        span {
+          font-size: 1.5rem;
+        }
+
         @include flex(center, center);
 
         @include tablet {

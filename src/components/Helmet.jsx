@@ -10,7 +10,7 @@ const Helmet = (props) => {
 };
 
 Helmet.propTypes = {
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string,
 };
 
 export default Helmet;

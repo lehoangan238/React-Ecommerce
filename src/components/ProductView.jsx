@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
-import { withRouter } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 
 import { useDispatch } from "react-redux";
 
@@ -10,16 +10,15 @@ import { remove } from "../redux/product-modal/productModalSlice";
 import { toast } from "react-toastify";
 import Button from "./Button";
 import numberWithCommas from "../utils/numberWithCommas";
-
 const ProductView = (props) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   let product = props.product;
   if (product === undefined)
     product = {
       title: "",
       price: "",
-      image01: null,
-      image02: null,
+      imageURL: "",
       categorySlug: "",
       colors: [],
       slug: "",
@@ -27,7 +26,7 @@ const ProductView = (props) => {
       description: "",
     };
 
-  const [previewImg, setPreviewImg] = useState(product.image01);
+  const [previewImg, setPreviewImg] = useState(product.imageURL[0]);
 
   const [descriptionExpand, setDescriptionExpand] = useState(false);
 
@@ -46,7 +45,7 @@ const ProductView = (props) => {
   };
 
   useEffect(() => {
-    setPreviewImg(product.image01);
+    setPreviewImg(product.imageURL[0]);
     setQuantity(1);
     setColor(undefined);
     setSize(undefined);
@@ -103,7 +102,7 @@ const ProductView = (props) => {
       };
       if (dispatch(addItem(newItem))) {
         dispatch(remove());
-        props.history.push("/cart");
+        navigate("/cart");
       } else {
         toast.error("Thêm vào giỏ hàng thất bại");
       }
@@ -116,15 +115,15 @@ const ProductView = (props) => {
         <div className="product__images__list">
           <div
             className="product__images__list__item"
-            onClick={() => setPreviewImg(product.image01)}
+            onClick={() => setPreviewImg(product.imageURL[0])}
           >
-            <img src={product.image01} alt="" />
+            <img src={product.imageURL[0]} alt="" />
           </div>
           <div
             className="product__images__list__item"
-            onClick={() => setPreviewImg(product.image02)}
+            onClick={() => setPreviewImg(product.imageURL[1])}
           >
-            <img src={product.image02} alt="" />
+            <img src={product.imageURL[1]} alt="" />
           </div>
         </div>
         <div className="product__images__main">
@@ -162,11 +161,11 @@ const ProductView = (props) => {
               <div
                 key={index}
                 className={`product__info__item__list__item ${
-                  color === item ? "active" : ""
+                  color === item.value ? "active" : ""
                 }`}
-                onClick={() => setColor(item)}
+                onClick={() => setColor(item.value)}
               >
-                <div className={`circle bg-${item}`}></div>
+                <div className={`circle bg-${item.value}`}></div>
               </div>
             ))}
           </div>
@@ -178,12 +177,12 @@ const ProductView = (props) => {
               <div
                 key={index}
                 className={`product__info__item__list__item ${
-                  size === item ? "active" : ""
+                  size === item.value ? "active" : ""
                 }`}
-                onClick={() => setSize(item)}
+                onClick={() => setSize(item.value)}
               >
                 <span className="product__info__item__list__item__size">
-                  {item}
+                  {item.value}
                 </span>
               </div>
             ))}
@@ -240,5 +239,9 @@ const ProductView = (props) => {
 ProductView.propTypes = {
   product: PropTypes.object,
 };
+const withLocation = (Component) => (props) => {
+  const location = useLocation();
 
-export default withRouter(ProductView);
+  return <Component {...props} location={location} />;
+};
+export default withLocation(ProductView);

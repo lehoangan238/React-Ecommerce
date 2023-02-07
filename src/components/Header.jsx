@@ -1,8 +1,13 @@
-import React, { useRef, useEffect } from "react";
-import { useSelector } from "react-redux";
-import { Link, useLocation } from "react-router-dom";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import React, { useRef, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { toast } from "react-toastify";
 import logo from "../assets/images/Logo-2.png";
-import productData from "../assets/fake-data/products";
+import { auth } from "../firebase/config";
+import { REMOVE_ACTIVE_USER, SET_ACTIVE_USER } from "../redux/auth/authSlice";
+import { ShowOnLogin, ShowOnLogout } from "./hiddenLink/hiddenLink";
+// import productData from "../assets/fake-data/products";
 const mainNav = [
   {
     display: "Trang chủ",
@@ -24,16 +29,16 @@ const mainNav = [
 
 const Header = () => {
   const { pathname } = useLocation();
+  const [displayName, setdisplayName] = useState("");
   const activeNav = mainNav.findIndex((e) => e.path === pathname);
   const cartItems = useSelector((state) => state.cartItems.value);
   const headerRef = useRef(null);
-  const products = productData.getCartItemsInfo(cartItems);
-  // total products
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const totalProducts = cartItems.reduce(
     (total, item) => total + Number(item.quantity),
     0
   );
-  console.log(products);
   useEffect(() => {
     window.addEventListener("scroll", () => {
       if (
@@ -49,7 +54,44 @@ const Header = () => {
       window.removeEventListener("scroll");
     };
   }, []);
-
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is signed in, see docs for a list of available properties
+        // https://firebase.google.com/docs/reference/js/firebase.User
+        if (user.displayName === null) {
+          const u1 = user.email.substring(0, user.email.lastIndexOf("@"));
+          const uName = u1.charAt(0).toUpperCase() + u1.slice(1);
+          setdisplayName(uName);
+        } else {
+          setdisplayName(user.displayName);
+        }
+        dispatch(
+          SET_ACTIVE_USER({
+            email: user.email,
+            userName: user.displayName ? user.displayName : user.email,
+            userID: user.uid,
+          })
+        );
+        // ...
+      } else {
+        // User is signed out
+        // ...
+        setdisplayName("");
+        dispatch(REMOVE_ACTIVE_USER());
+      }
+    });
+  }, [dispatch, displayName]);
+  const logoutUser = () => {
+    signOut(auth)
+      .then(() => {
+        toast.success("Logout Successful");
+        navigate("/login");
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+  };
   const menuLeft = useRef(null);
 
   const menuToggle = () => menuLeft.current.classList.toggle("active");
@@ -172,7 +214,29 @@ const Header = () => {
             </div>
 
             <div className="header__menu__item header__menu__right__item">
-              <i className="bx bx-user"></i>
+              <ShowOnLogin>
+                <Link>
+                  <i className="bx bx-user"></i>
+                  <span>{displayName}</span>
+                </Link>
+              </ShowOnLogin>
+            </div>
+            <div className="header__menu__item header__menu__right__item">
+              <ShowOnLogout>
+                <Link to="/login">Đăng nhập</Link>
+              </ShowOnLogout>
+            </div>
+            <div className="header__menu__item header__menu__right__item">
+              <ShowOnLogin>
+                <Link to="/order-history">My Order</Link>
+              </ShowOnLogin>
+            </div>
+            <div className="header__menu__item header__menu__right__item">
+              <ShowOnLogin>
+                <Link onClick={logoutUser} to="/login">
+                  Logout
+                </Link>
+              </ShowOnLogin>
             </div>
           </div>
         </div>

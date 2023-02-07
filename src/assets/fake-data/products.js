@@ -278,7 +278,6 @@ const products = [
   },
   // 18 products
 ];
-
 const getAllProducts = () => products;
 
 const getProducts = (count) => {

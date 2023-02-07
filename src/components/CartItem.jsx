@@ -8,6 +8,7 @@ import { removeItem, updateItem } from "../redux/shopping-cart/cartItemsSlice";
 const CartItem = (props) => {
   const dispatch = useDispatch();
   const [item, setItem] = useState(props.item);
+  console.log(item);
   const [quantity, setQuantity] = useState(props.item.quantity);
   useEffect(() => {
     setItem(props.item);
@@ -30,44 +31,49 @@ const CartItem = (props) => {
     dispatch(removeItem(item));
   };
   return (
-    <div className="cart__item">
-      <div className="cart__item__image">
-        <img src={item.product.image01} alt="" />
-      </div>
-      <div className="cart__item__info">
-        <div className="cart__item__info__name">
-          <Link to={`/product/${item.product.slug}`}>
-            {" "}
-            {`${item.product.title} - ${item.color} - ${item.size}`}
-          </Link>
-        </div>
-        <div className="cart__item__info__price">
-          {numberWithCommas(item.price)}
-        </div>
-        <div className="cart__item__info__quantity">
-          <div className="product__info__item__quantity">
-            <div
-              className="product__info__item__quantity__btn"
-              onClick={() => updateQuantity("minus")}
-            >
-              <i className="bx bx-minus"></i>
+    <>
+      {item.product === undefined ? (
+        ""
+      ) : (
+        <div className="cart__item">
+          <div className="cart__item__image">
+            <img src={item.product.imageURL[0]} alt="" />
+          </div>
+          <div className="cart__item__info">
+            <div className="cart__item__info__name">
+              <Link to={`/catalog/${item.slug}`}>
+                {`${item.product.title} - ${item.color} - ${item.size}`}
+              </Link>
             </div>
-            <div className="product__info__item__quantity__input">
-              {quantity}
+            <div className="cart__item__info__price">
+              {numberWithCommas(item.price)}
             </div>
-            <div
-              className="product__info__item__quantity__btn"
-              onClick={() => updateQuantity("plus")}
-            >
-              <i className="bx bx-plus"></i>
+            <div className="cart__item__info__quantity">
+              <div className="product__info__item__quantity">
+                <div
+                  className="product__info__item__quantity__btn"
+                  onClick={() => updateQuantity("minus")}
+                >
+                  <i className="bx bx-minus"></i>
+                </div>
+                <div className="product__info__item__quantity__input">
+                  {quantity}
+                </div>
+                <div
+                  className="product__info__item__quantity__btn"
+                  onClick={() => updateQuantity("plus")}
+                >
+                  <i className="bx bx-plus"></i>
+                </div>
+              </div>
+            </div>
+            <div className="cart__item__del" onClick={removeProduct}>
+              <i className="bx bx-trash"></i>
             </div>
           </div>
         </div>
-        <div className="cart__item__del" onClick={removeProduct}>
-          <i className="bx bx-trash"></i>
-        </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 };
 

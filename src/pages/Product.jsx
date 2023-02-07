@@ -1,22 +1,39 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Helmet from "../components/Helmet";
 import Section, { SectionBody, SectionTitle } from "../components/Section";
 import Grid from "../components/Grid";
-import ProductCard from "../components/ProductCard";
-import productData from "../assets/fake-data/products";
 import ProductView from "../components/ProductView";
-const Product = (props) => {
-  const product = productData.getProductBySlug(props.match.params.slug);
-  const relatedProducts = productData.getProducts(8);
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [product]);
-  console.log(product);
+
+import { useParams } from "react-router-dom";
+import ProductCard from "../components/ProductCard";
+import loading from "../assets/images/loading.gif";
+import useFetchCollection from "../customHooks/useFetchCollection";
+const Product = () => {
+  const { slug } = useParams();
+  // const [product, setProduct] = useState(null);
+
+  const { data, isLoading } = useFetchCollection("products");
+  // get product by slug
+  const getProductBySlug = data?.find((item) => item.slug === slug);
+  // useEffect(() => {
+  //   setProduct(getProductBySlug);
+  // }, [getProductBySlug]);
+  const relatedProducts = data?.filter((item) => item.slug !== slug);
+
   return (
-    <Helmet title={product.title}>
+    <Helmet title={data?.title}>
       <Section>
         <SectionBody>
-          <ProductView product={product} />
+          {isLoading ? (
+            <img
+              src={loading}
+              alt="atl"
+              style={{ width: "50px" }}
+              className="--center-all"
+            />
+          ) : (
+            <ProductView product={getProductBySlug} />
+          )}
         </SectionBody>
       </Section>
       <Section>
@@ -26,8 +43,8 @@ const Product = (props) => {
             {relatedProducts.map((item, index) => (
               <ProductCard
                 key={index}
-                img01={item.image01}
-                img02={item.image02}
+                img01={item.imageURL[0]}
+                img02={item.imageURL[1]}
                 name={item.title}
                 price={Number(item.price)}
                 slug={item.slug}
@@ -37,6 +54,7 @@ const Product = (props) => {
         </SectionBody>
       </Section>
     </Helmet>
+    // <div>details</div>
   );
 };
 
