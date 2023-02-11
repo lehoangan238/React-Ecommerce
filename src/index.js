@@ -24,6 +24,7 @@ import {
   Register,
 } from "./pages";
 import { ToastContainer } from "react-toastify";
+import ReviewProducts from "./components/revỉewProducts/ReviewProducts";
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
@@ -44,6 +45,10 @@ ReactDOM.render(
                 <Route path="/checkout-success" element={<CheckoutSuccess />} />
                 <Route path="/order-history" element={<OrderHistory />} />
                 <Route path="/order-details/:id" element={<OrderDetails />} />
+                <Route
+                  path="/review-product/:id"
+                  element={<ReviewProducts />}
+                />
               </Routes>
             </div>
           </div>

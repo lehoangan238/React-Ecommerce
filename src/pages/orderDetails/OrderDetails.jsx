@@ -3,9 +3,9 @@ import { Link, useParams } from "react-router-dom";
 import useFetchDocument from "../../customHooks/useFetchDocument";
 import spinnerImg from "../../assets/images/loading.gif";
 import styles from "./OrderDetails.module.scss";
+import numberWithCommas from "../../utils/numberWithCommas";
 const OrderDetails = () => {
   const [order, setOrder] = useState(null);
-  //   console.log(order.cartItems);
   console.log(order);
   const { id } = useParams();
   const { document } = useFetchDocument("orders", id);
@@ -30,7 +30,7 @@ const OrderDetails = () => {
               <b>Order ID</b> {order.id}
             </p>
             <p>
-              <b>Order Amount</b> ${order.orderAmount}
+              <b>Order Amount</b> {numberWithCommas(order.orderAmount)}đ
             </p>
             <p>
               <b>Order Status</b> {order.orderStatus}
@@ -49,7 +49,7 @@ const OrderDetails = () => {
               </thead>
               <tbody>
                 {order.cartItems.map((cart, index) => {
-                  const { id, name, price, imageURL, cartQuantity } = cart;
+                  const { id, name, price, imageURL, quantity } = cart;
                   return (
                     <tr key={id}>
                       <td>
@@ -65,9 +65,9 @@ const OrderDetails = () => {
                           style={{ width: "100px" }}
                         />
                       </td>
-                      <td>{price}</td>
-                      <td>{cartQuantity}</td>
-                      <td>{(price * cartQuantity).toFixed(2)}</td>
+                      <td>{numberWithCommas(price)}đ</td>
+                      <td>{quantity}</td>
+                      <td>{numberWithCommas(price * quantity)}đ</td>
                       <td className={styles.icons}>
                         <Link to={`/review-product/${id}`}>
                           <button className="--btn --btn-primary">

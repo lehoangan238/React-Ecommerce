@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
-import { useLocation, useNavigate } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 
 import { useDispatch } from "react-redux";
 
@@ -9,11 +9,14 @@ import { addItem } from "../redux/shopping-cart/cartItemsSlice";
 import { remove } from "../redux/product-modal/productModalSlice";
 import { toast } from "react-toastify";
 import Button from "./Button";
+
 import numberWithCommas from "../utils/numberWithCommas";
+
 const ProductView = (props) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   let product = props.product;
+
   if (product === undefined)
     product = {
       title: "",
@@ -82,7 +85,10 @@ const ProductView = (props) => {
         size: size,
         price: product.price,
         quantity: quantity,
+        imageURL: product.imageURL[0],
+        id: product.id,
       };
+      console.log(newItem);
       if (dispatch(addItem(newItem))) {
         toast.success("Đã thêm vào giỏ hàng");
       } else {

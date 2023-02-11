@@ -15,7 +15,6 @@ export const cartItemsSlice = createSlice({
   reducers: {
     addItem: (state, action) => {
       const newItem = action.payload;
-      console.log(newItem);
       const duplicate = state.value.filter(
         (e) =>
           e.slug === newItem.slug &&
@@ -33,7 +32,6 @@ export const cartItemsSlice = createSlice({
         state.value = [
           ...state.value,
           {
-            id: duplicate[0].id,
             slug: newItem.slug,
             color: newItem.color,
             size: newItem.size,
@@ -46,19 +44,10 @@ export const cartItemsSlice = createSlice({
           ...state.value,
           {
             ...action.payload,
-            id:
-              state.value.length > 0
-                ? state.value[state.value.length - 1].id + 1
-                : 1,
           },
         ];
       }
-      localStorage.setItem(
-        "cartItems",
-        JSON.stringify(
-          state.value.sort((a, b) => (a.id > b.id ? 1 : a.id < b.id ? -1 : 0))
-        )
-      );
+      localStorage.setItem("cartItems", JSON.stringify(state.value));
     },
     updateItem: (state, action) => {
       const newItem = action.payload;
@@ -89,12 +78,7 @@ export const cartItemsSlice = createSlice({
           },
         ];
       }
-      localStorage.setItem(
-        "cartItems",
-        JSON.stringify(
-          state.value.sort((a, b) => (a.id > b.id ? 1 : a.id < b.id ? -1 : 0))
-        )
-      );
+      localStorage.setItem("cartItems", JSON.stringify(state.value));
     },
     removeItem: (state, action) => {
       const item = action.payload;
@@ -102,12 +86,7 @@ export const cartItemsSlice = createSlice({
         (e) =>
           e.slug !== item.slug || e.color !== item.color || e.size !== item.size
       );
-      localStorage.setItem(
-        "cartItems",
-        JSON.stringify(
-          state.value.sort((a, b) => (a.id > b.id ? 1 : a.id < b.id ? -1 : 0))
-        )
-      );
+      localStorage.setItem("cartItems", JSON.stringify(state.value));
     },
     clearCart: (state) => {
       state.value = [];

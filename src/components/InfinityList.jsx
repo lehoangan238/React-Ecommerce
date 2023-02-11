@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 import ProductCard from "./ProductCard";
 import Grid from "./Grid";
+import Search from "./search/Search";
 
 const InfinityList = (props) => {
   const perload = 6;
@@ -9,7 +10,7 @@ const InfinityList = (props) => {
   const listRef = useRef(null);
   const [load, setLoad] = useState(true);
   const [index, setIndex] = useState(0);
-
+  const [search, setSearch] = useState("");
   useEffect(() => {
     setData(props.data.slice(0, perload));
     setIndex(1);
@@ -43,20 +44,23 @@ const InfinityList = (props) => {
     setLoad(false);
   }, [load, index, data, props.data]);
   return (
-    <div ref={listRef}>
-      <Grid col={3} mdCol={2} smCol={1} gap={20}>
-        {data.map((item, index) => (
-          <ProductCard
-            key={index}
-            img01={item.imageURL[0]}
-            img02={item.imageURL[1]}
-            name={item.title}
-            price={Number(item.price)}
-            slug={item.slug}
-          />
-        ))}
-      </Grid>
-    </div>
+    <>
+      <Search value={search} onChange={(e) => setSearch(e.target.value)} />
+      <div ref={listRef}>
+        <Grid col={3} mdCol={2} smCol={1} gap={20}>
+          {data.map((item, index) => (
+            <ProductCard
+              key={index}
+              img01={item.imageURL[0]}
+              img02={item.imageURL[1]}
+              name={item.title}
+              price={Number(item.price)}
+              slug={item.slug}
+            />
+          ))}
+        </Grid>
+      </div>
+    </>
   );
 };
 
